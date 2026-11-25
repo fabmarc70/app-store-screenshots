@@ -2,7 +2,7 @@
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 FONT = "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf"
-NAMES = ["planning","bulletin-analyse","simulateur","rentabilite","vacations",
+NAMES = ["stage", "planning","bulletin-analyse","simulateur","rentabilite","vacations",
          "gain-reel","radar","missions","carriere","scanner"]
 FD = "/usr/share/fonts/opentype/inter/"
 # Remplacements de texte : zone à effacer (x0,y0,x1,y1), texte, police, taille,
@@ -27,6 +27,11 @@ REPL = {
         ((1012, 1281, 1228, 1327), "Brévan 27", "Inter-SemiBold.otf", 44, (1218, 1319), "rs", (183, 195, 217)),
         ((140, 2273, 470, 2319), "27100 Montval", "Inter-SemiBold.otf", 44, (145, 2311), "ls", (183, 195, 217)),
         ((1012, 2273, 1228, 2319), "Brévan 27", "Inter-SemiBold.otf", 44, (1218, 2311), "rs", (183, 195, 217)),
+    ],
+    "stage": [
+        ((95, 1091, 760, 1141), "NOVA GARDE", "Inter-Bold.otf", 47, (101, 1133), "ls", (255, 255, 255)),
+        ((95, 1681, 760, 1731), "SECURITE.PRO", "Inter-Bold.otf", 47, (101, 1723), "ls", (255, 255, 255)),
+        ((95, 2271, 760, 2321), "ORYS PROTECTION", "Inter-Bold.otf", 47, (101, 2313), "ls", (255, 255, 255)),
     ],
     "missions": [
         ((290, 2092, 710, 2142), "Sécurité.pro", "Inter-Regular.otf", 44, (295, 2133), "ls", (172, 182, 202)),
