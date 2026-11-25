@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr">
-<!-- Visuels 3D Agent+ : un seul grand téléphone incliné + objets 3D (decor/png). URL: deck-3d.html?s=e1..e4 -->
+<!-- Visuels Agent+ : un seul grand téléphone 3D (rendu three.js, phone3d/out), sans objets décoratifs.
+     URL: deck-3d.html?s=e1..e4 -->
 <head>
 <meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=block" rel="stylesheet">
@@ -16,25 +17,7 @@
   h1 mark{display:inline-block;background:#fff;color:#1747D0;padding:0 34px 8px;border-radius:22px;transform:rotate(-2.5deg);
     box-shadow:0 24px 60px rgba(5,20,80,.35);margin-bottom:14px;text-shadow:none}
   .sub{margin-top:26px;color:#E3ECFF;font-weight:700;font-size:56px}
-
-  /* ---- Téléphone 3D ---- */
-  .scene{position:absolute;perspective:3000px;z-index:4}
-  .p3{position:relative;width:var(--w);aspect-ratio:1022/2082;transform-style:preserve-3d}
-  .p3 .edge,.p3 .back{position:absolute;inset:0.3% 0.6%;border-radius:19.6%/9.6%}
-  .p3 .back{background:#16171C}
-  .p3 .btn{position:absolute;width:1.4%;border-radius:8px}
-  .p3 .frame,.p3 .screen,.p3 .glare{position:absolute}
-  .p3 .frame{inset:0;width:100%;height:100%;transform:translateZ(1px)}
-  .p3 .screen{left:5.088%;top:2.209%;width:89.824%;height:95.581%;border-radius:13.7%/6.33%;overflow:hidden;transform:translateZ(2px)}
-  .p3 .screen img{width:100%;height:100%;object-fit:cover;display:block}
-  .p3 .glare{left:5%;top:2%;width:90%;height:96%;border-radius:13.7%/6.33%;transform:translateZ(3px);
-    background:linear-gradient(118deg,rgba(255,255,255,.20) 0%,rgba(255,255,255,.04) 30%,rgba(255,255,255,0) 45%)}
-  .shadow{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(5,15,60,.6),transparent);filter:blur(40px);z-index:3}
-
-  /* ---- Objets 3D ---- */
-  .obj{position:absolute;filter:drop-shadow(0 50px 45px rgba(5,15,60,.45))}
-  .obj.front{z-index:6} .obj.behind{z-index:2;filter:drop-shadow(0 40px 40px rgba(5,15,60,.35)) blur(1.5px)}
-
+  .phone{position:absolute;z-index:4;filter:drop-shadow(0 70px 90px rgba(5,15,60,.5))}
   .chip{position:absolute;z-index:7;display:flex;align-items:center;gap:24px;padding:28px 44px 28px 28px;border-radius:44px;
     background:#fff;box-shadow:0 30px 70px rgba(5,15,50,.35)}
   .chip .ic{width:100px;height:100px;border-radius:28px;display:grid;place-items:center;font-size:54px;background:#EAF1FF}
@@ -46,48 +29,17 @@
 <body>
 <div id="root"></div>
 <script>
-// Tranche dorée : 56 couches, du doré clair (avant) au bronze foncé (arrière) + dos + boutons
-const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
-const edgeColor=(t)=>{const s=[[246,232,200],[205,182,140],[150,126,88],[92,76,52]];
-  const k=Math.min(2,Math.floor(t*3)),u=t*3-k;return `rgb(${mix(s[k],s[k+1],u).join(',')})`;};
-const phone=(img,{x,y,w=1100,ry,rx,rz})=>{
-  const depth=Math.round(w*.1), n=56, step=depth/n;
-  const btns=[['left',25.5,4.4],['left',32.4,7.4],['left',40.7,7.4],['right',34.4,11.3]];
-  const btnLayers=[.3,.4,.5,.6,.7].map(f=>btns.map(([side,top,h])=>
-    `<div class="btn" style="${side}:-1.1%;top:${top}%;height:${h}%;background:${edgeColor(.3+f*.4)};transform:translateZ(${-f*depth}px)"></div>`).join('')).join('');
-  return `<div class="scene" style="left:${x}px;top:${y}px"><div class="p3" style="--w:${w}px;transform:rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)">
-    <div class="back" style="transform:translateZ(${-depth-2}px)"></div>
-    ${Array.from({length:n},(_,i)=>`<div class="edge" style="background:${edgeColor(i/(n-1))};transform:translateZ(${-(i+1)*step}px)"></div>`).join('')}
-    ${btnLayers}
-    <img class="frame" src="src/mockup.png"><div class="screen"><img src="clean/${img}.png"></div><div class="glare"></div></div></div>`;
-};
-const obj=(name,x,y,w,rot=0,layer='front')=>`<img class="obj ${layer}" src="decor/png/${name}.png" style="left:${x}px;top:${y}px;width:${w}px;transform:rotate(${rot}deg)">`;
+const phone=(name,x,y,w)=>`<img class="phone" src="phone3d/out/${name}.png" style="left:${x}px;top:${y}px;width:${w}px">`;
 const chip=(side,y,ic,k,v)=>`<div class="chip" style="${side}:40px;top:${y}px"><div class="ic">${ic}</div><div><div class="k">${k}</div><div class="v">${v}</div></div></div>`;
-const shadow=(x,y,w,h)=>`<div class="shadow" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"></div>`;
-
 const E={
-  // Titre en haut, téléphone incliné vers la droite
   e1:()=>`<div class="head" style="top:160px"><h1><mark>Planning</mark><br>intelligent.</h1><div class="sub">Heures et salaire calculés.</div></div>
-    ${obj('plus',20,700,230,-12,'behind')}
-    ${phone('planning',{x:60,y:800,ry:-24,rx:10,rz:6})}
-    ${obj('calendar',870,560,420,8)}
-    ${chip('left',2330,'€','Salaire estimé','<span class="g">2 390 €</span>')}`,
-  // Titre en bas, téléphone en haut incliné vers la gauche
-  e2:()=>`${shadow(160,1980,1000,220)}
-    ${phone('rentabilite',{x:80,y:-250,ry:26,rx:12,rz:-7})}
-    ${obj('coin',860,1640,460,6)}
-    ${obj('pin',-30,1500,360,-10)}
+    ${phone('e1',70,760,1200)}`,
+  e2:()=>`${phone('e2',50,-160,1180)}
     <div class="head" style="top:2250px"><h1>Mission<br><mark>rentable ?</mark></h1><div class="sub">Votre gain réel, au centime.</div></div>`,
-  // Titre en haut, inclinaison douce
   e3:()=>`<div class="head" style="top:160px"><h1>Bulletin<br><mark>vérifié</mark></h1><div class="sub">SMIC, taux, coefficient.</div></div>
-    ${phone('bulletin-analyse',{x:90,y:800,ry:-16,rx:8,rz:-4})}
-    ${obj('document',860,600,430,10)}
-    ${obj('shield',-50,2380,330,-10)}`,
-  // Titre en haut, un seul téléphone incliné vers la gauche
+    ${phone('e3',80,760,1170)}`,
   e4:()=>`<div class="head" style="top:160px"><h1>Vos données<br><mark>restent privées</mark></h1><div class="sub">Analysées sur l’iPhone.</div></div>
-    ${phone('scanner',{x:90,y:810,ry:22,rx:10,rz:-5})}
-    ${obj('lock',900,1300,400,10)}
-    ${obj('shield',-30,2300,320,-12)}`,
+    ${phone('e4',50,760,1180)}`,
 };
 const id=new URLSearchParams(location.search).get('s')||'e1';
 document.getElementById('root').innerHTML=`<div class="slide">${E[id]()}</div>`;
