@@ -20,7 +20,9 @@
   /* Téléphone 3D : cadre + écran + tranche simulée par des couches */
   .scene{position:absolute;perspective:3200px;z-index:3}
   .p3{position:relative;width:1000px;aspect-ratio:1022/2082;transform-style:preserve-3d}
-  .p3 .edge{position:absolute;inset:0.4% 0.6%;border-radius:13%/6.4%;background:linear-gradient(90deg,#7d6a4a,#c9b08a 40%,#8a7553)}
+  .p3 .edge,.p3 .back{position:absolute;inset:0.3% 0.6%;border-radius:19.6%/9.6%}
+  .p3 .back{background:#16171C}
+  .p3 .btn{position:absolute;width:14px;border-radius:7px}
   .p3 .frame,.p3 .screen{position:absolute;transform:translateZ(1px)}
   .p3 .frame{inset:0;width:100%;height:100%}
   .p3 .screen{left:5.088%;top:2.209%;width:89.824%;height:95.581%;border-radius:13.7%/6.33%;overflow:hidden;transform:translateZ(2px)}
@@ -87,9 +89,18 @@ plus:(w)=>`<svg width="${w}" viewBox="0 0 100 100"><defs><linearGradient id="pl"
   <path d="M38 8h24v30h30v24H62v30H38V62H8V38h30z" fill="#B5380A" transform="translate(0 6)"/><path d="M38 8h24v30h30v24H62v30H38V62H8V38h30z" fill="url(#pl)"/></svg>`,
 };
 const deco = (k,x,y,w,rot=0)=>`<div class="deco" style="left:${x}px;top:${y}px;transform:rotate(${rot}deg)">${D[k](w)}</div>`;
+// Épaisseur réelle : 48 couches sur ~96 px, du doré clair (avant) au bronze foncé (arrière),
+// un dos sombre et les boutons latéraux en relief.
+const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+const edgeColor=(t)=>{const s=[[246,232,200],[205,182,140],[150,126,88],[92,76,52]];
+  const k=Math.min(2,Math.floor(t*3)),u=t*3-k;return `rgb(${mix(s[k],s[k+1],u).join(',')})`;};
+const buttons=(z)=>[['left',-9,520,90],['left',-9,660,150],['left',-9,830,150],['right',-9,700,230]]
+  .map(([side,off,top,h])=>`<div class="btn" style="${side}:${off}px;top:${top}px;height:${h}px;background:${edgeColor(.35+z/60*.4)};transform:translateZ(${-z}px)"></div>`).join('');
 const phone = (img,x,y,ry,rx,rz,scale=1)=>`
   <div class="scene" style="left:${x}px;top:${y}px"><div class="p3" style="transform:scale(${scale}) rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)">
-  ${Array.from({length:16},(_,i)=>`<div class="edge" style="transform:translateZ(${-(i+1)*2.4}px)"></div>`).join('')}
+  <div class="back" style="transform:translateZ(-98px)"></div>
+  ${Array.from({length:48},(_,i)=>`<div class="edge" style="background:${edgeColor(i/47)};transform:translateZ(${-(i+1)*2}px)"></div>`).join('')}
+  ${[30,36,42,48,54,60].map(buttons).join('')}
   <img class="frame" src="src/mockup.png"><div class="screen"><img src="clean/${img}.png"></div><div class="glare"></div></div></div>`;
 const chip = (side,y,ic,k,v)=>`<div class="chip" style="${side}:40px;top:${y}px"><div class="ic">${ic}</div><div><div class="k">${k}</div><div class="v">${v}</div></div></div>`;
 
@@ -97,24 +108,24 @@ const E = {
   // 1. Téléphone incliné vers la droite, titre en haut avec mot surligné, calendrier 3D
   e1:()=>`<div class="head" style="top:170px"><h1><mark>Planning</mark><br>intelligent.</h1><div class="sub">Heures et salaire calculés.</div></div>
     <div class="shadow" style="left:260px;top:2560px;width:900px;height:220px"></div>
-    ${phone('planning',200,880,-24,10,7)}
+    ${phone('planning',180,900,-32,14,8)}
     ${deco('calendar',930,700,300,12)}${deco('plus',90,860,110,-14)}
     ${chip('left',2290,'€','Salaire estimé','<span class="g">2 390 €</span>')}`,
   // 2. Téléphone incliné vers la gauche, titre en bas (comme ta 2e capture), pièce + épingle
   e2:()=>`<div class="shadow" style="left:180px;top:1900px;width:900px;height:200px"></div>
-    ${phone('rentabilite',170,-40,26,12,-9,.92)}
+    ${phone('rentabilite',170,-20,34,14,-10,.92)}
     ${deco('coin',940,1180,260,18)}${deco('pin',60,1500,190,-12)}${deco('plus',1080,420,90,15)}
     <div class="head" style="top:2230px"><h1>Mission<br><mark>rentable ?</mark></h1><div class="sub">Votre gain réel, au centime.</div></div>`,
   // 3. Téléphone presque droit, légère rotation, bouclier sécurité
   e3:()=>`<div class="head" style="top:170px"><h1>Bulletin<br><mark>vérifié</mark></h1><div class="sub">SMIC, taux, coefficient.</div></div>
     <div class="shadow" style="left:240px;top:2620px;width:860px;height:200px"></div>
-    ${phone('bulletin-analyse',160,860,-10,4,-4)}
+    ${phone('bulletin-analyse',160,860,-22,8,-5)}
     ${deco('shield',920,820,300,10)}${deco('coin',40,2250,220,-16)}`,
   // 4. Deux téléphones superposés en perspective, cadenas
   e4:()=>`<div class="head" style="top:170px"><h1>Vos données<br><mark>restent privées</mark></h1><div class="sub">Analysées sur l’iPhone.</div></div>
     <div class="shadow" style="left:120px;top:2600px;width:1080px;height:220px"></div>
-    ${phone('scanner',-150,1020,28,8,-6,.82)}
-    ${phone('carriere',420,900,-26,8,6,.86)}
+    ${phone('scanner',-150,1020,34,10,-6,.82)}
+    ${phone('carriere',420,900,-32,10,6,.86)}
     ${deco('lock',960,760,240,12)}${deco('plus',60,900,100,-10)}`,
 };
 const id = new URLSearchParams(location.search).get('s') || 'e1';
