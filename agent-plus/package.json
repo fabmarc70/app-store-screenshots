@@ -1,0 +1,6 @@
+{
+  "name": "agent-plus-screenshots",
+  "private": true,
+  "description": "Rendu des visuels App Store Agent+ (Playwright) et des objets 3D décoratifs (three.js)",
+  "dependencies": { "three": "0.160.0" }
+}
