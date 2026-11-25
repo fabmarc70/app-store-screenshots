@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<!-- Agent+ App Store screenshots v2. URL: deck-v2.html?s=<slide>&t=bleu|clair -->
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1320px;height:2868px;overflow:hidden;font-family:"Plus Jakarta Sans","Inter Display",sans-serif;-webkit-font-smoothing:antialiased}
+
+  /* ---------- Thème BLEU : bleu de marque, l'UI sombre ressort ---------- */
+  .t-bleu{--title:#FFFFFF;--sub:#E3ECFF;--accent1:#FFC069;--accent2:#FF9A3D;--accent-b1:#FFFFFF;--accent-b2:#CFE3FF;
+    --pill-bg:rgba(255,255,255,.16);--pill-bd:rgba(255,255,255,.32);--pill-tx:#FFFFFF;--dot:#FF8A3D;
+    --chip-bg:linear-gradient(180deg,#14214A,#0B1430);--chip-bd:rgba(255,255,255,.22);--chip-k:#B8C8EA;--chip-v:#FFFFFF;
+    --phone-shadow:0 70px 140px rgba(5,15,60,.55);
+    background:
+      radial-gradient(900px 700px at 50% 2100px, rgba(130,190,255,.55), transparent 70%),
+      linear-gradient(180deg,#0E2F9A 0%, #1747D0 28%, #2A6BF0 60%, #4A8DFF 100%);}
+  /* ---------- Thème CLAIR : contraste maximal avec l'UI sombre ---------- */
+  .t-clair{--title:#0B1533;--sub:#3E4A66;--accent1:#E5480E;--accent2:#D63F08;--accent-b1:#1F5BE8;--accent-b2:#1546C2;
+    --pill-bg:#FFFFFF;--pill-bd:rgba(20,40,100,.12);--pill-tx:#1A2A55;--dot:#E5480E;
+    --chip-bg:linear-gradient(180deg,#FFFFFF,#F4F7FF);--chip-bd:rgba(20,40,100,.10);--chip-k:#5A6684;--chip-v:#0B1533;
+    --phone-shadow:0 60px 120px rgba(20,40,110,.30);
+    background:
+      radial-gradient(1000px 800px at 50% 2000px, rgba(47,123,255,.22), transparent 70%),
+      linear-gradient(180deg,#F5F8FF 0%, #E9F0FF 45%, #D7E4FF 100%);}
+
+  .slide{position:relative;width:1320px;height:2868px;overflow:hidden}
+  .head{position:absolute;top:170px;left:70px;right:70px;text-align:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:16px;padding:16px 32px;border-radius:999px;background:var(--pill-bg);
+    border:2px solid var(--pill-bd);color:var(--pill-tx);font-weight:700;font-size:38px;letter-spacing:.05em;text-transform:uppercase}
+  .eyebrow .dot{width:16px;height:16px;border-radius:50%;background:var(--dot)}
+  .eyebrow .brand{text-transform:none;letter-spacing:-.01em;font-weight:800}
+  .eyebrow .brand span{color:var(--dot)}
+  h1{margin-top:40px;color:var(--title);font-weight:800;font-size:146px;line-height:1.02;letter-spacing:-.04em}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1 b{background:linear-gradient(90deg,var(--accent-b1),var(--accent-b2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:30px;color:var(--sub);font-weight:600;font-size:56px;line-height:1.25;letter-spacing:-.01em}
+
+  .phone{position:absolute;left:50%;transform:translateX(-50%);width:1040px;aspect-ratio:1022/2082;filter:drop-shadow(var(--phone-shadow))}
+  .phone .screen{position:absolute;z-index:2;left:5.088%;top:2.209%;width:89.824%;height:95.581%;border-radius:13.7%/6.33%;overflow:hidden;background:#000}
+  .phone .screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .phone .frame{position:absolute;inset:0;width:100%;height:100%}
+
+  .chip{position:absolute;z-index:5;display:flex;align-items:center;gap:26px;padding:30px 44px 30px 30px;border-radius:44px;
+    background:var(--chip-bg);border:2px solid var(--chip-bd);box-shadow:0 30px 70px rgba(5,15,50,.35)}
+  .chip .ic{width:100px;height:100px;border-radius:28px;display:grid;place-items:center;font-size:54px;font-weight:800}
+  .chip .k{font-size:34px;color:var(--chip-k);font-weight:600}
+  .chip .v{font-size:74px;font-weight:800;letter-spacing:-.03em;line-height:1.02;color:var(--chip-v)}
+  .ic.gr{background:rgba(34,197,139,.18);color:#22C58B} .ic.or{background:rgba(255,120,40,.18)} .ic.bu{background:rgba(47,123,255,.20)}
+  .g{color:#1FBF84} .r{color:#F04848} .o{color:#FF8A3D}
+  .t-clair .g{color:#0E9F6C} .t-clair .o{color:#D9530F}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// Une idée par visuel, titre court (lisible en miniature), sous-titre en 3-5 mots, une seule pastille.
+const S = {
+  planning:{img:'planning',eyebrow:'brand',
+    title:'Votre planning<br>de <em>vacations</em>.',sub:'Heures et salaire calculés.',
+    chip:{side:'r',y:2290,ic:'€',cls:'gr',k:'Salaire estimé',v:'<span class="g">2 390 €</span>'}},
+  bulletin:{img:'bulletin-analyse',eyebrow:'Fiche de paie',
+    title:'Bulletin de paie<br><em>vérifié</em> en 1 scan.',sub:'SMIC, taux, coefficient.',
+    chip:{side:'l',y:1560,ic:'✓',cls:'gr',k:'5 contrôles',v:'<span class="g">Cohérent</span>'}},
+  simulateur:{img:'simulateur',eyebrow:'Rentabilité mission',
+    title:'Mission <em>rentable</em><br>ou&nbsp;pas&nbsp;?',sub:'La réponse en 1 tap.',
+    chip:{side:'r',y:1660,ic:'🚗',cls:'bu',k:'Aller-retour',v:'205,9 km'}},
+  rentabilite:{img:'rentabilite',eyebrow:'Gain réel',
+    title:'Votre <em>vrai</em> gain,<br>au centime.',sub:'Charges et carburant déduits.',
+    chip:{side:'l',y:2300,ic:'💶',cls:'or',k:'Taux horaire réel',v:'<span class="o">7,02 €/h</span>'}},
+  vacations:{img:'vacations',eyebrow:'Prochaines vacations',
+    title:'La vacation la<br>plus <em>rentable</em>.',sub:'Gain réel jour par jour.',
+    chip:{side:'r',y:1880,ic:'★',cls:'bu',k:'Meilleur gain',v:'<span class="g">216,72 €</span>'}},
+  gain:{img:'gain-reel',eyebrow:'Coût des trajets',
+    title:'Chaque <em>km</em><br>compte.',sub:'Carburant et usure calculés.',
+    chip:{side:'l',y:1740,ic:'⛽',cls:'or',k:'Trajets du mois',v:'<span class="r">−176 €</span>'}},
+  radar:{img:'radar',eyebrow:'Radar emploi',
+    title:'Le radar emploi<br>de la <b>sécurité</b>.',sub:'Partout en France.',
+    chip:{side:'r',y:1740,ic:'📍',cls:'bu',k:'Postes repérés',v:'139'}},
+  missions:{img:'missions',eyebrow:'Missions',
+    title:'Les offres près<br>de <em>chez vous</em>.',sub:'Créez vos alertes.',
+    chip:{side:'l',y:1520,ic:'🔔',cls:'or',k:'Alertes',v:'8 offres'}},
+  carriere:{img:'carriere',eyebrow:'Gestion de carrière',
+    title:'Votre <em>carrière</em><br>dans la poche.',sub:'Documents, formations, droits.'},
+  confidentiel:{img:'scanner',eyebrow:'100 % privé',
+    title:'Vos documents<br>restent <b>privés</b>.',sub:'Analysés sur l’iPhone.',
+    chip:{side:'r',y:1620,ic:'🔒',cls:'bu',k:'Données',v:'Chiffrées'}},
+};
+const q = new URLSearchParams(location.search);
+const s = S[q.get('s') || 'planning'];
+const theme = q.get('t') || 'bleu';
+const eyebrow = s.eyebrow === 'brand'
+  ? `<span class="brand">Agent<span>+</span></span>&nbsp;·&nbsp;Sécurité privée`
+  : `<span class="dot"></span>${s.eyebrow}`;
+const c = s.chip;
+const chip = c ? `<div class="chip" style="${c.side==='l'?'left':'right'}:30px;top:${c.y}px">
+  <div class="ic ${c.cls}">${c.ic}</div><div><div class="k">${c.k}</div><div class="v">${c.v}</div></div></div>` : '';
+document.getElementById('root').innerHTML = `<div class="slide t-${theme}">
+  <div class="head"><div class="eyebrow">${eyebrow}</div><h1>${s.title}</h1><div class="sub">${s.sub}</div></div>
+  <div class="phone" style="top:${s.top||860}px"><img class="frame" src="src/mockup.png"><div class="screen"><img src="clean/${s.img}.png"></div></div>
+  ${chip}</div>`;
+document.body.className = 't-' + theme;
+</script>
+</body>
+</html>
