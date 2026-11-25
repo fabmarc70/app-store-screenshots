@@ -1,13 +1,55 @@
-# Nettoie la barre d'état (9:41, batterie pleine) et floute le salaire.
+# Nettoie la barre d'état (9:41, batterie pleine) et remplace salaires / noms réels par du fictif.
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 FONT = "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf"
 NAMES = ["planning","bulletin-analyse","simulateur","rentabilite","vacations",
          "gain-reel","radar","missions","carriere","scanner"]
-BLUR = {  # zones salaire (x0,y0,x1,y1) en pixels source 1320x2868
-    "carriere": [(105, 955, 400, 1060)],
-    "planning": [(1030, 2368, 1250, 2452)],
+FD = "/usr/share/fonts/opentype/inter/"
+# Remplacements de texte : zone à effacer (x0,y0,x1,y1), texte, police, taille,
+# position d'ancrage (x, ligne de base), ancre PIL, couleur.
+REPL = {
+    "planning": [
+        (("disc", 125, 1681, 66, 1628, 1671), "ATL", "Inter-Bold.otf", 39, (125, 1665), "ms", (232, 236, 245)),
+        (("disc", 720, 1681, 66, 1628, 1671), "ORYS", "Inter-Bold.otf", 39, (720, 1665), "ms", (232, 236, 245)),
+        ((258, 1970, 365, 2018), "ATL", "Inter-SemiBold.otf", 55, (262, 2015), "ls", (255, 255, 255)),
+        ((1096, 2390, 1236, 2434), "2390€", "Inter-Bold.otf", 48, (1100, 2430), "ls", (255, 255, 255)),
+    ],
+    "carriere": [
+        ((120, 975, 362, 1040), "2180 €", "Inter-Bold.otf", 76, (125, 1035), "ls", (255, 255, 255)),
+    ],
+    "missions": [
+        ((290, 2092, 710, 2142), "Sécurité.pro", "Inter-Regular.otf", 44, (295, 2133), "ls", (172, 182, 202)),
+    ],
 }
+def erase_disc(im, cx, cy, r, y0, y1):
+    """Efface une bande dans un badge rond avec la couleur médiane du fond."""
+    px = im.load(); dark = []
+    for y in range(y0, y1):
+        for x in range(cx - r, cx + r):
+            if (x - cx) ** 2 + (y - cy) ** 2 < r * r and sum(px[x, y]) < 150:
+                dark.append(px[x, y])
+    dark.sort(key=sum); c = dark[len(dark) // 2]
+    for y in range(y0, y1):
+        for x in range(cx - r, cx + r):
+            if (x - cx) ** 2 + (y - cy) ** 2 < r * r:
+                px[x, y] = c
+def erase_box(im, box, pad=5):
+    if box[0] == "disc":
+        return erase_disc(im, *box[1:])
+    x0, y0, x1, y1 = box; px = im.load()
+    for y in range(y0, y1):
+        a, b = px[x0 - pad, y], px[x1 + pad, y]
+        for x in range(x0, x1):
+            t = (x - x0 + pad) / (x1 - x0 + 2 * pad)
+            px[x, y] = tuple(round(a[i] * (1 - t) + b[i] * t) for i in range(3))
+def draw_text(im, text, font, size, pos, anchor, color):
+    S = 4; ov = Image.new("RGBA", (im.width * S // 4, im.height * S // 4), (0, 0, 0, 0))
+    ov = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    big = Image.new("RGBA", (im.width * 2, im.height * 2), (0, 0, 0, 0))
+    ImageDraw.Draw(big).text((pos[0] * 2, pos[1] * 2), text, font=ImageFont.truetype(FD + font, size * 2),
+                             fill=color + (255,), anchor=anchor)
+    ov = big.resize(im.size, Image.LANCZOS)
+    im.paste(ov, (0, 0), ov)
 def erase_band(im, y0=58, y1=138, x0=150, x1=1230):
     px = im.load()
     for x in range(x0, x1):
@@ -41,11 +83,7 @@ def draw_bar(im):
 for n in NAMES:
     im = Image.open(f"src/{n}.png").convert("RGB")
     erase_band(im); draw_bar(im)
-    for box in BLUR.get(n, []):
-        blurred = im.filter(ImageFilter.GaussianBlur(40))
-        mask = Image.new("L", im.size, 0)
-        ImageDraw.Draw(mask).rounded_rectangle(box, radius=30, fill=255)
-        mask = mask.filter(ImageFilter.GaussianBlur(10))
-        im = Image.composite(blurred, im, mask)
+    for box, text, font, size, pos, anchor, color in REPL.get(n, []):
+        erase_box(im, box); draw_text(im, text, font, size, pos, anchor, color)
     im.save(f"clean/{n}.png")
 print("ok")
