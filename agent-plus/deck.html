@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#050914; --bg1:#0A1430; --blue:#2F7BFF; --blue2:#4C8DFF; --cyan:#5CC8FF;
+    --orange:#FF5A1F; --orange2:#FF8A3D; --text:#FFFFFF; --muted:#AFC0E0; --green:#22C58B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1320px;height:2868px;overflow:hidden;background:var(--bg0);font-family:"Plus Jakarta Sans","Inter Display",sans-serif;-webkit-font-smoothing:antialiased}
+  .slide{position:relative;width:1320px;height:2868px;overflow:hidden;
+    background:
+      radial-gradient(1200px 900px at 50% 1500px, rgba(47,123,255,.42), transparent 70%),
+      radial-gradient(900px 600px at 50% -120px, rgba(76,141,255,.55), transparent 75%),
+      linear-gradient(180deg,#0C1A44 0%, #081130 30%, #060C1F 65%, #050914 100%);}
+  .slide.alt{background:
+      radial-gradient(1100px 900px at 80% 1700px, rgba(255,90,31,.20), transparent 70%),
+      radial-gradient(1200px 900px at 20% 1400px, rgba(47,123,255,.40), transparent 70%),
+      radial-gradient(900px 600px at 50% -120px, rgba(76,141,255,.55), transparent 75%),
+      linear-gradient(180deg,#0C1A44 0%, #081130 30%, #060C1F 65%, #050914 100%);}
+  .grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.10) 2px, transparent 2.5px);background-size:44px 44px;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0 900px,#000 1300px,#000 2100px,transparent 2700px);opacity:.55}
+  .head{position:absolute;top:190px;left:90px;right:90px;text-align:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:16px;padding:16px 30px;border-radius:999px;background:rgba(255,255,255,.08);
+    border:2px solid rgba(255,255,255,.14);color:#DCE6FF;font-weight:700;font-size:34px;letter-spacing:.06em;text-transform:uppercase}
+  .eyebrow .dot{width:14px;height:14px;border-radius:50%;background:var(--orange);box-shadow:0 0 18px var(--orange)}
+  h1{margin-top:46px;color:var(--text);font-weight:800;font-size:128px;line-height:1.04;letter-spacing:-.035em}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--orange) 0%,var(--orange2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1 b{font-weight:800;background:linear-gradient(90deg,#6FB0FF,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:34px;color:var(--muted);font-weight:500;font-size:48px;line-height:1.3}
+  .logo{font-weight:800;font-size:150px;letter-spacing:-.04em;color:#fff;line-height:1}
+  .logo span{color:var(--orange)}
+  /* phone */
+  .phone{position:absolute;left:50%;transform:translateX(-50%);width:1040px;aspect-ratio:1022/2082}
+  .phone .screen{position:absolute;z-index:2;left:5.088%;top:2.209%;width:89.824%;height:95.581%;border-radius:13.7%/6.33%;overflow:hidden;background:#000}
+  .phone .screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .phone .frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .phone::before{content:"";position:absolute;inset:4% 2%;border-radius:120px;box-shadow:0 60px 160px rgba(0,0,0,.65),0 0 140px rgba(47,123,255,.35);z-index:-1}
+  /* chips */
+  .chip{position:absolute;z-index:5;display:flex;align-items:center;gap:24px;padding:30px 40px;border-radius:40px;
+    background:linear-gradient(180deg,rgba(22,34,70,.92),rgba(12,20,44,.92));border:2px solid rgba(120,160,255,.35);
+    box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(20px)}
+  .chip .ic{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;font-size:46px}
+  .chip .k{font-size:30px;color:var(--muted);font-weight:600}
+  .chip .v{font-size:56px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  .g{color:var(--green)} .o{color:var(--orange2)} .r{color:#FF5B5B} .bl{color:#6FB0FF}
+  .ic.gr{background:rgba(34,197,139,.16)} .ic.or{background:rgba(255,90,31,.16)} .ic.bu{background:rgba(47,123,255,.20)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const S = {
+  planning:{img:'planning',eyebrow:'Sécurité privée',
+    title:'Votre planning<br>de <em>vacations</em>.',sub:'Heures, salaire et congés calculés pour vous.',
+    hero:true, phoneTop:960,
+    chips:[{x:40,y:2050,ic:'⏱',cls:'bu',k:'Ce mois-ci',v:'162 h'},{x:830,y:2300,ic:'€',cls:'gr',k:'Salaire estimé',v:'<span class="g">2 755 €</span>'}]},
+  bulletin:{img:'bulletin-analyse',eyebrow:'Fiche de paie',
+    title:'Votre bulletin<br><em>vérifié</em> en 1 scan.',sub:'Taux horaire, SMIC, minimum conventionnel.',phoneTop:820,
+    chips:[{x:60,y:1560,ic:'✓',cls:'gr',k:'5 contrôles',v:'<span class="g">Cohérent</span>'}]},
+  simulateur:{img:'simulateur',eyebrow:'Rentabilité mission',alt:true,
+    title:'Cette mission<br>vaut-elle <em>le coup</em> ?',sub:'Trajet, carburant, charges : réponse en 1 tap.',phoneTop:820,
+    chips:[{x:740,y:1640,ic:'🚗',cls:'bu',k:'Aller-retour',v:'205,9 km'}]},
+  rentabilite:{img:'rentabilite',eyebrow:'Gain réel',alt:true,
+    title:'Ce que vous<br>gagnez <em>vraiment</em>.',sub:'Après charges et carburant, au centime près.',phoneTop:820,
+    chips:[{x:40,y:2280,ic:'💶',cls:'or',k:'Taux horaire réel',v:'<span class="o">7,02 €/h</span>'}]},
+  vacations:{img:'vacations',eyebrow:'Vos prochaines vacations',
+    title:'Repérez la vacation<br>la plus <em>rentable</em>.',sub:'Gain réel estimé pour chaque journée.',phoneTop:820,
+    chips:[{x:780,y:1900,ic:'★',cls:'bu',k:'Meilleur gain',v:'<span class="g">216,72 €</span>'}]},
+  gain:{img:'gain-reel',eyebrow:'Coût des trajets',alt:true,
+    title:'Chaque <em>kilomètre</em><br>compte.',sub:'Carburant, usure, temps sur la route.',phoneTop:820,
+    chips:[{x:40,y:1720,ic:'⛽',cls:'or',k:'Coût déplacements',v:'<span class="r">−176,34 €</span>'}]},
+  radar:{img:'radar',eyebrow:'Radar emploi',
+    title:'Le radar emploi<br>de la <b>sécurité</b>.',sub:'Entreprises qui recrutent, partout en France.',phoneTop:820,
+    chips:[{x:790,y:1720,ic:'📍',cls:'bu',k:'France entière',v:'139 postes'}]},
+  missions:{img:'missions',eyebrow:'Missions',
+    title:'Les offres près<br>de <em>chez vous</em>.',sub:'Filtrez, sauvegardez, créez des alertes.',phoneTop:820,
+    chips:[{x:40,y:1500,ic:'🔔',cls:'or',k:'Nouvelles alertes',v:'8 offres'}]},
+  carriere:{img:'carriere',eyebrow:'Gestion de carrière',
+    title:'Toute votre <em>carrière</em><br>dans la poche.',sub:'Documents, formations, fiscalité, droits.',phoneTop:820,chips:[]},
+  confidentiel:{img:'scanner',eyebrow:'100 % privé',
+    title:'Vos documents<br>restent <b>chez vous</b>.',sub:'Analyse sur le téléphone. Rien n’est envoyé.',phoneTop:820,
+    chips:[{x:780,y:1600,ic:'🔒',cls:'bu',k:'Données',v:'Chiffrées'}]},
+};
+const id = new URLSearchParams(location.search).get('s') || 'planning';
+const s = S[id];
+const head = s.hero
+  ? `<div class="head"><div class="logo">Agent<span>+</span></div>
+     <h1 style="font-size:112px;margin-top:40px">${s.title}</h1><div class="sub">${s.sub}</div></div>`
+  : `<div class="head"><div class="eyebrow"><span class="dot"></span>${s.eyebrow}</div>
+     <h1>${s.title}</h1><div class="sub">${s.sub}</div></div>`;
+const chips = (s.chips||[]).map(c=>`<div class="chip" style="left:${c.x}px;top:${c.y}px">
+  <div class="ic ${c.cls}">${c.ic}</div><div><div class="k">${c.k}</div><div class="v">${c.v}</div></div></div>`).join('');
+document.getElementById('root').innerHTML = `<div class="slide ${s.alt?'alt':''}"><div class="grid"></div>${head}
+  <div class="phone" style="top:${s.phoneTop}px"><div class="screen"><img src="src/${s.img}.png"></div><img class="frame" src="src/mockup.png"></div>
+  ${chips}</div>`;
+</script>
+</body>
+</html>
