@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<!-- Exemples inclinés + décors 3D (thème bleu). URL: deck-3d.html?s=e1..e4 -->
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=block" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1320px;height:2868px;overflow:hidden;font-family:"Plus Jakarta Sans",sans-serif;-webkit-font-smoothing:antialiased}
+  .slide{position:relative;width:1320px;height:2868px;overflow:hidden;
+    background:radial-gradient(900px 700px at 50% 2100px, rgba(130,190,255,.55), transparent 70%),
+      linear-gradient(180deg,#0E2F9A 0%,#1747D0 28%,#2A6BF0 60%,#4A8DFF 100%)}
+  .head{position:absolute;left:70px;right:70px;text-align:center;z-index:6}
+  h1{color:#fff;font-weight:800;font-size:150px;line-height:1.04;letter-spacing:-.04em}
+  h1 mark{display:inline-block;background:#fff;color:#1747D0;padding:0 34px 8px;border-radius:22px;transform:rotate(-2.5deg);
+    box-shadow:0 24px 60px rgba(5,20,80,.35);margin-bottom:14px}
+  h1 em{font-style:normal;color:#FFC069}
+  .sub{margin-top:26px;color:#E3ECFF;font-weight:700;font-size:56px}
+
+  /* Téléphone 3D : cadre + écran + tranche simulée par des couches */
+  .scene{position:absolute;perspective:3200px;z-index:3}
+  .p3{position:relative;width:1000px;aspect-ratio:1022/2082;transform-style:preserve-3d}
+  .p3 .edge{position:absolute;inset:0.4% 0.6%;border-radius:13%/6.4%;background:linear-gradient(90deg,#7d6a4a,#c9b08a 40%,#8a7553)}
+  .p3 .frame,.p3 .screen{position:absolute;transform:translateZ(1px)}
+  .p3 .frame{inset:0;width:100%;height:100%}
+  .p3 .screen{left:5.088%;top:2.209%;width:89.824%;height:95.581%;border-radius:13.7%/6.33%;overflow:hidden;transform:translateZ(2px)}
+  .p3 .screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .p3 .glare{position:absolute;left:5%;top:2%;width:90%;height:96%;border-radius:13.7%/6.33%;transform:translateZ(3px);
+    background:linear-gradient(115deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 35%);pointer-events:none}
+  .shadow{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(5,15,60,.55),transparent);filter:blur(30px);z-index:2}
+
+  .deco{position:absolute;z-index:5;filter:drop-shadow(0 40px 50px rgba(5,15,60,.45))}
+  .chip{position:absolute;z-index:7;display:flex;align-items:center;gap:24px;padding:28px 42px 28px 28px;border-radius:44px;
+    background:#fff;box-shadow:0 30px 70px rgba(5,15,50,.35)}
+  .chip .ic{width:96px;height:96px;border-radius:28px;display:grid;place-items:center;font-size:52px;background:#EAF1FF}
+  .chip .k{font-size:34px;color:#5A6684;font-weight:700}
+  .chip .v{font-size:72px;font-weight:800;letter-spacing:-.03em;line-height:1.02;color:#0B1533}
+  .g{color:#0E9F6C}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ---------- Décors 3D en SVG (style « clay » assorti au bleu/orange de la marque) ----------
+const D = {
+calendar:(w)=>`<svg width="${w}" viewBox="0 0 220 230"><defs>
+  <linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCE6FF"/></linearGradient>
+  <linearGradient id="ch" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FA2FF"/><stop offset="1" stop-color="#1D4ED8"/></linearGradient>
+  <linearGradient id="cn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#1747D0"/></linearGradient>
+  <linearGradient id="cr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9AA6BD"/><stop offset=".5" stop-color="#F4F7FF"/><stop offset="1" stop-color="#8592AB"/></linearGradient></defs>
+  <rect x="14" y="40" width="192" height="182" rx="34" fill="#A9BCE8"/>
+  <rect x="14" y="30" width="192" height="180" rx="34" fill="url(#cb)"/>
+  <path d="M14 64a34 34 0 0 1 34-34h124a34 34 0 0 1 34 34v18H14z" fill="url(#ch)"/>
+  <rect x="58" y="10" width="18" height="46" rx="9" fill="url(#cr)"/><rect x="144" y="10" width="18" height="46" rx="9" fill="url(#cr)"/>
+  <text x="110" y="182" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="800" font-size="92" fill="url(#cn)">31</text>
+  <rect x="26" y="40" width="80" height="10" rx="5" fill="#fff" opacity=".35"/></svg>`,
+coin:(w)=>`<svg width="${w}" viewBox="0 0 200 200"><defs>
+  <linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE9A6"/><stop offset=".5" stop-color="#FFC23A"/><stop offset="1" stop-color="#E89B0C"/></linearGradient>
+  <linearGradient id="gi" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE9A6"/><stop offset="1" stop-color="#F0A81A"/></linearGradient></defs>
+  <ellipse cx="100" cy="112" rx="86" ry="80" fill="#B8740A"/>
+  <ellipse cx="100" cy="98" rx="86" ry="80" fill="url(#gt)"/>
+  <ellipse cx="100" cy="98" rx="66" ry="61" fill="url(#gi)"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="800" font-size="92" fill="#C27D0A">€</text>
+  <ellipse cx="70" cy="56" rx="26" ry="12" fill="#fff" opacity=".45" transform="rotate(-25 70 56)"/></svg>`,
+pin:(w)=>`<svg width="${w}" viewBox="0 0 200 260"><defs>
+  <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB15C"/><stop offset=".55" stop-color="#FF6A1F"/><stop offset="1" stop-color="#D9410B"/></linearGradient></defs>
+  <ellipse cx="100" cy="246" rx="44" ry="10" fill="#0B1F6B" opacity=".35"/>
+  <path d="M100 240C60 186 22 146 22 96a78 78 0 0 1 156 0c0 50-38 90-78 144z" fill="url(#pg)"/>
+  <circle cx="100" cy="94" r="34" fill="#fff"/><circle cx="100" cy="94" r="16" fill="#FF7A2A"/>
+  <ellipse cx="66" cy="52" rx="22" ry="11" fill="#fff" opacity=".45" transform="rotate(-35 66 52)"/></svg>`,
+shield:(w)=>`<svg width="${w}" viewBox="0 0 220 250"><defs>
+  <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9CC8FF"/><stop offset=".5" stop-color="#3B82F6"/><stop offset="1" stop-color="#1546C2"/></linearGradient></defs>
+  <path d="M110 30l78 28v62c0 58-36 98-78 116-42-18-78-58-78-116V58z" fill="#0F3AA8" transform="translate(0 10)"/>
+  <path d="M110 20l78 28v62c0 58-36 98-78 116-42-18-78-58-78-116V48z" fill="url(#sg)"/>
+  <path d="M110 40l60 22v50c0 46-28 78-60 94-32-16-60-48-60-94V62z" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6"/>
+  <path d="M78 120l24 24 44-50" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="80" cy="64" rx="24" ry="10" fill="#fff" opacity=".4" transform="rotate(-20 80 64)"/></svg>`,
+lock:(w)=>`<svg width="${w}" viewBox="0 0 200 240"><defs>
+  <linearGradient id="lb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC069"/><stop offset="1" stop-color="#E5480E"/></linearGradient>
+  <linearGradient id="ls" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9AA6BD"/><stop offset=".5" stop-color="#F4F7FF"/><stop offset="1" stop-color="#7E8BA5"/></linearGradient></defs>
+  <path d="M56 104V76a44 44 0 0 1 88 0v28" fill="none" stroke="url(#ls)" stroke-width="24"/>
+  <rect x="24" y="108" width="152" height="122" rx="32" fill="#B5380A"/>
+  <rect x="24" y="98" width="152" height="122" rx="32" fill="url(#lb)"/>
+  <circle cx="100" cy="150" r="18" fill="#7A2406"/><rect x="92" y="156" width="16" height="34" rx="8" fill="#7A2406"/>
+  <rect x="40" y="110" width="60" height="10" rx="5" fill="#fff" opacity=".4"/></svg>`,
+plus:(w)=>`<svg width="${w}" viewBox="0 0 100 100"><defs><linearGradient id="pl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB15C"/><stop offset="1" stop-color="#E5480E"/></linearGradient></defs>
+  <path d="M38 8h24v30h30v24H62v30H38V62H8V38h30z" fill="#B5380A" transform="translate(0 6)"/><path d="M38 8h24v30h30v24H62v30H38V62H8V38h30z" fill="url(#pl)"/></svg>`,
+};
+const deco = (k,x,y,w,rot=0)=>`<div class="deco" style="left:${x}px;top:${y}px;transform:rotate(${rot}deg)">${D[k](w)}</div>`;
+const phone = (img,x,y,ry,rx,rz,scale=1)=>`
+  <div class="scene" style="left:${x}px;top:${y}px"><div class="p3" style="transform:scale(${scale}) rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)">
+  ${Array.from({length:16},(_,i)=>`<div class="edge" style="transform:translateZ(${-(i+1)*2.4}px)"></div>`).join('')}
+  <img class="frame" src="src/mockup.png"><div class="screen"><img src="clean/${img}.png"></div><div class="glare"></div></div></div>`;
+const chip = (side,y,ic,k,v)=>`<div class="chip" style="${side}:40px;top:${y}px"><div class="ic">${ic}</div><div><div class="k">${k}</div><div class="v">${v}</div></div></div>`;
+
+const E = {
+  // 1. Téléphone incliné vers la droite, titre en haut avec mot surligné, calendrier 3D
+  e1:()=>`<div class="head" style="top:170px"><h1><mark>Planning</mark><br>intelligent.</h1><div class="sub">Heures et salaire calculés.</div></div>
+    <div class="shadow" style="left:260px;top:2560px;width:900px;height:220px"></div>
+    ${phone('planning',200,880,-24,10,7)}
+    ${deco('calendar',930,700,300,12)}${deco('plus',90,860,110,-14)}
+    ${chip('left',2290,'€','Salaire estimé','<span class="g">2 390 €</span>')}`,
+  // 2. Téléphone incliné vers la gauche, titre en bas (comme ta 2e capture), pièce + épingle
+  e2:()=>`<div class="shadow" style="left:180px;top:1900px;width:900px;height:200px"></div>
+    ${phone('rentabilite',170,-40,26,12,-9,.92)}
+    ${deco('coin',940,1180,260,18)}${deco('pin',60,1500,190,-12)}${deco('plus',1080,420,90,15)}
+    <div class="head" style="top:2230px"><h1>Mission<br><mark>rentable ?</mark></h1><div class="sub">Votre gain réel, au centime.</div></div>`,
+  // 3. Téléphone presque droit, légère rotation, bouclier sécurité
+  e3:()=>`<div class="head" style="top:170px"><h1>Bulletin<br><mark>vérifié</mark></h1><div class="sub">SMIC, taux, coefficient.</div></div>
+    <div class="shadow" style="left:240px;top:2620px;width:860px;height:200px"></div>
+    ${phone('bulletin-analyse',160,860,-10,4,-4)}
+    ${deco('shield',920,820,300,10)}${deco('coin',40,2250,220,-16)}`,
+  // 4. Deux téléphones superposés en perspective, cadenas
+  e4:()=>`<div class="head" style="top:170px"><h1>Vos données<br><mark>restent privées</mark></h1><div class="sub">Analysées sur l’iPhone.</div></div>
+    <div class="shadow" style="left:120px;top:2600px;width:1080px;height:220px"></div>
+    ${phone('scanner',-150,1020,28,8,-6,.82)}
+    ${phone('carriere',420,900,-26,8,6,.86)}
+    ${deco('lock',960,760,240,12)}${deco('plus',60,900,100,-10)}`,
+};
+const id = new URLSearchParams(location.search).get('s') || 'e1';
+document.getElementById('root').innerHTML = `<div class="slide">${E[id]()}</div>`;
+</script>
+</body>
+</html>

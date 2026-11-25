@@ -17,6 +17,17 @@ REPL = {
     "carriere": [
         ((120, 975, 362, 1040), "2180 €", "Inter-Bold.otf", 76, (125, 1035), "ls", (255, 255, 255)),
     ],
+    "simulateur": [
+        ((92, 1332, 640, 1394), "27100 Montval, France", "Inter-Regular.otf", 50, (95, 1378), "ls", (255, 255, 255)),
+    ],
+    "vacations": [
+        ((140, 757, 470, 803), "27100 Montval", "Inter-SemiBold.otf", 44, (145, 795), "ls", (183, 195, 217)),
+        ((1012, 757, 1228, 803), "Brévan 27", "Inter-SemiBold.otf", 44, (1218, 795), "rs", (183, 195, 217)),
+        ((140, 1281, 470, 1327), "27100 Montval", "Inter-SemiBold.otf", 44, (145, 1319), "ls", (183, 195, 217)),
+        ((1012, 1281, 1228, 1327), "Brévan 27", "Inter-SemiBold.otf", 44, (1218, 1319), "rs", (183, 195, 217)),
+        ((140, 2273, 470, 2319), "27100 Montval", "Inter-SemiBold.otf", 44, (145, 2311), "ls", (183, 195, 217)),
+        ((1012, 2273, 1228, 2319), "Brévan 27", "Inter-SemiBold.otf", 44, (1218, 2311), "rs", (183, 195, 217)),
+    ],
     "missions": [
         ((290, 2092, 710, 2142), "Sécurité.pro", "Inter-Regular.otf", 44, (295, 2133), "ls", (172, 182, 202)),
     ],
@@ -33,6 +44,20 @@ def erase_disc(im, cx, cy, r, y0, y1):
         for x in range(cx - r, cx + r):
             if (x - cx) ** 2 + (y - cy) ** 2 < r * r:
                 px[x, y] = c
+def map_label(im):
+    """Remplace le libellé « Chaumont » de la carte, sans toucher au trajet ni à l'épingle."""
+    x0, y0, x1, y1 = 1030, 1010, 1168, 1048; px = im.load(); pad = 4
+    keep = lambda c: (c[2] > 140 and c[0] < 90) or (c[0] > 220 and 120 < c[1] < 200 and c[2] < 80)
+    for y in range(y0, y1):
+        a, b = px[x0 - pad, y], px[x1 + pad, y]
+        for x in range(x0, x1):
+            if keep(px[x, y]): continue
+            t = (x - x0 + pad) / (x1 - x0 + 2 * pad)
+            px[x, y] = tuple(round(a[i] * (1 - t) + b[i] * t) for i in range(3))
+    big = Image.new("RGBA", (im.width * 2, im.height * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(big)
+    d.text((1078 * 2, 1040 * 2), "Montval", font=ImageFont.truetype(FD + "Inter-Medium.otf", 60), fill=(60, 64, 67, 255),
+           anchor="ls", stroke_width=5, stroke_fill=(255, 255, 255, 235))
+    ov = big.resize(im.size, Image.LANCZOS); im.paste(ov, (0, 0), ov)
 def erase_box(im, box, pad=5):
     if box[0] == "disc":
         return erase_disc(im, *box[1:])
@@ -83,6 +108,8 @@ def draw_bar(im):
 for n in NAMES:
     im = Image.open(f"src/{n}.png").convert("RGB")
     erase_band(im); draw_bar(im)
+    if n == "simulateur":
+        map_label(im)
     for box, text, font, size, pos, anchor, color in REPL.get(n, []):
         erase_box(im, box); draw_text(im, text, font, size, pos, anchor, color)
     im.save(f"clean/{n}.png")
