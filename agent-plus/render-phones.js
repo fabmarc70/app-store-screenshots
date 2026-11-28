@@ -1,5 +1,6 @@
 // Rendu des téléphones 3D (three.js) en PNG transparents, recadrés au plus juste.
-// Usage : node render-phones.js '<json [{name,img,ry,rx,rz,color}]>'  -> phone3d/out/<name>.png
+// Usage : node render-phones.js '<json [{name,img,ry,rx,rz,color,device}]>'  -> phone3d/out/<name>.png
+// device:'ipad' -> iPad Pro 13" (écran pris dans clean-ipad/, toile 3000x3800)
 const {chromium}=require('playwright');const http=require('http');const fs=require('fs');const path=require('path');const {execFileSync}=require('child_process');
 const TYPES={'.html':'text/html','.js':'text/javascript','.png':'image/png','.otf':'font/otf'};
 const server=http.createServer((req,res)=>{const f=path.join(__dirname,decodeURIComponent(req.url.split('?')[0]));
@@ -9,7 +10,9 @@ server.listen(0,async()=>{const port=server.address().port;
   const b=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
   const p=await b.newPage({viewport:{width:2400,height:3800}});
   p.on('pageerror',e=>console.log('pageerror:',e.message));
-  for(const j of jobs){const qs=new URLSearchParams({img:j.img,ry:j.ry,rx:j.rx,rz:j.rz,color:j.color||'natural'});
+  for(const j of jobs){const ipad=j.device==='ipad',w=ipad?3000:2400,h=3800;
+    const qs=new URLSearchParams({img:j.img,ry:j.ry,rx:j.rx,rz:j.rz,color:j.color||(ipad?'silver':'natural'),device:j.device||'iphone',w,h});
+    await p.setViewportSize({width:w,height:h});
     await p.goto(`http://localhost:${port}/phone3d/phone.html?${qs}`);
     await p.waitForFunction(()=>window.__done,null,{timeout:120000});
     const out=`phone3d/out/${j.name}.png`;await p.screenshot({path:out,omitBackground:true});

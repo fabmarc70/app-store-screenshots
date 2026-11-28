@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<!-- Visuels iPad 13" (2064x2752) Agent+ : même style que l'iPhone. URL: deck-ipad.html?s=01-planning|02-bulletin|03-simulateur -->
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=block" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:2064px;height:2752px;overflow:hidden;font-family:"Plus Jakarta Sans",sans-serif;-webkit-font-smoothing:antialiased}
+  .slide{position:relative;width:2064px;height:2752px;overflow:hidden;
+    background:radial-gradient(1500px 1100px at 50% 1900px, rgba(130,190,255,.55), transparent 70%),
+      radial-gradient(1000px 700px at 85% 250px, rgba(120,170,255,.35), transparent 70%),
+      linear-gradient(180deg,#0E2F9A 0%,#1747D0 28%,#2A6BF0 60%,#4A8DFF 100%)}
+  .head{position:absolute;top:150px;left:80px;right:80px;text-align:center;z-index:8}
+  h1{color:#fff;font-weight:800;font-size:200px;line-height:1.03;letter-spacing:-.04em;text-shadow:0 12px 50px rgba(5,20,80,.25)}
+  h1 mark{display:inline-block;background:#fff;color:#1747D0;padding:0 46px 10px;border-radius:30px;transform:rotate(-2.5deg);
+    box-shadow:0 30px 80px rgba(5,20,80,.35);margin-bottom:18px;text-shadow:none}
+  .sub{margin-top:30px;color:#E3ECFF;font-weight:700;font-size:76px}
+  .tab{position:absolute;z-index:4;filter:drop-shadow(0 90px 110px rgba(5,15,60,.5))}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const F={
+  '01-planning':  {t:'<mark>Planning</mark> intelligent.', sub:'Heures et salaire calculés.'},
+  '02-bulletin':  {t:'Bulletin <mark>vérifié</mark>', sub:'SMIC, taux, coefficient.'},
+  '03-simulateur':{t:'<mark>Rentable</mark> ou pas ?', sub:'Trajet, carburant, charges.'},
+};
+const id=new URLSearchParams(location.search).get('s')||'01-planning', f=F[id];
+document.getElementById('root').innerHTML=`<div class="slide">
+  <div class="head"><h1>${f.t}</h1><div class="sub">${f.sub}</div></div>
+  <img class="tab" src="phone3d/out/ipad-${id}.png" style="left:142px;top:640px;width:1780px"></div>`;
+</script>
+</body>
+</html>
